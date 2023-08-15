@@ -71,6 +71,24 @@ function App() {
       });
       return;
     }
+    if (month.length !== 2 || Number(month) > 12) {
+      setErrors((prev) => {
+        return { ...prev, month: "Invalid month" };
+      });
+      return;
+    }
+    if (year.length !== 2) {
+      setErrors((prev) => {
+        return { ...prev, year: "Invalid year" };
+      });
+      return;
+    }
+    if (cvcNumber.length !== 3) {
+      setErrors((prev) => {
+        return { ...prev, cvc: "Invalid CVC" };
+      });
+      return;
+    }
 
     setSubmitSuccess(true);
   };
@@ -98,7 +116,7 @@ function App() {
           {cvcNumber ? cvcNumber : "000"}
         </div>
       </div>
-      <div id="credit-card-front-wrapper">
+      <span id="credit-card-front-wrapper">
         <div id="credit-card-front-header">
           <img
             src={creditCardLogo}
@@ -117,85 +135,91 @@ function App() {
             {month ? month : "00"}/{year ? year : "00"}
           </div>
         </div>
-      </div>
+      </span>
       {!submitSuccess ? (
-        <form id="card-form" onSubmit={handleSubmit}>
-          <label htmlFor="name" className="card-form-label">
-            CARDHOLDER NAME
-          </label>
-          <input
-            type="text"
-            id="name"
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-            className={`text-input ${errors.name ? "invalid" : ""}`}
-            placeholder="e.g. Jane Appleseed"
-          />
-          <div className="input-error-container">{errors.name}</div>
-          <label htmlFor="number" className="card-form-label">
-            CARD NUMBER
-          </label>
-          <input
-            type="text"
-            id="number"
-            onChange={(e) => setCardNumber(e.target.value.replace(/\D+/g, ""))}
-            value={formatNumber(cardNumber)}
-            className={`text-input ${errors.cardNumber ? "invalid" : ""}`}
-            placeholder="e.g. 1234 5678 9123 0000"
-            maxLength={19}
-          />
-          <div className="input-error-container">{errors.cardNumber}</div>
-          <div id="card-form-expiration-cvc-input-container">
-            <div className="card-form-input-container">
-              <label htmlFor="month" className="card-form-label">
-                EXP. DATE
-              </label>
-              <input
-                type="text"
-                id="month"
-                onChange={(e) => setMonth(e.target.value.replace(/\D+/g, ""))}
-                value={month}
-                className={`text-input ${errors.month ? "invalid" : ""}`}
-                placeholder="MM"
-                maxLength={2}
-              />
-              <div className="input-error-container">{errors.month}</div>
+        <div id="card-form-container">
+          <form id="card-form" onSubmit={handleSubmit}>
+            <label htmlFor="name" className="card-form-label">
+              CARDHOLDER NAME
+            </label>
+            <input
+              type="text"
+              id="name"
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+              className={`text-input ${errors.name ? "invalid" : ""}`}
+              placeholder="e.g. Jane Appleseed"
+            />
+            <div className="input-error-container">{errors.name}</div>
+            <label htmlFor="number" className="card-form-label">
+              CARD NUMBER
+            </label>
+            <input
+              type="text"
+              id="number"
+              onChange={(e) =>
+                setCardNumber(e.target.value.replace(/\D+/g, ""))
+              }
+              value={formatNumber(cardNumber)}
+              className={`text-input ${errors.cardNumber ? "invalid" : ""}`}
+              placeholder="e.g. 1234 5678 9123 0000"
+              maxLength={19}
+            />
+            <div className="input-error-container">{errors.cardNumber}</div>
+            <div id="card-form-expiration-cvc-input-container">
+              <div id="card-form-expiration-container">
+                <label htmlFor="month" className="card-form-label">
+                  EXP. DATE (MM/YY)
+                </label>
+                <div id="card-form-month-year-container">
+                  <input
+                    type="text"
+                    id="month"
+                    onChange={(e) =>
+                      setMonth(e.target.value.replace(/\D+/g, ""))
+                    }
+                    value={month}
+                    className={`text-input ${errors.month ? "invalid" : ""}`}
+                    placeholder="MM"
+                    maxLength={2}
+                  />
+                  <input
+                    type="text"
+                    id="yr"
+                    onChange={(e) =>
+                      setYear(e.target.value.replace(/\D+/g, ""))
+                    }
+                    value={year}
+                    className={`text-input ${errors.year ? "invalid" : ""}`}
+                    placeholder="YY"
+                    maxLength={2}
+                  />
+                </div>
+                <div className="input-error-container">
+                  {errors.year || errors.month}
+                </div>
+              </div>
+              <div className="card-form-input-container flex-2">
+                <label htmlFor="cvc" className="card-form-label">
+                  CVC
+                </label>
+                <input
+                  type="text"
+                  id="cvc"
+                  onChange={(e) =>
+                    setCvcNumber(e.target.value.replace(/\D+/g, ""))
+                  }
+                  value={cvcNumber}
+                  className={`text-input ${errors.cvc ? "invalid" : ""}`}
+                  placeholder="e.g. 123"
+                  maxLength={3}
+                />
+                <div className="input-error-container">{errors.cvc}</div>
+              </div>
             </div>
-            <div className="card-form-input-container margin-right-left">
-              <label htmlFor="yr" className="card-form-label">
-                (MM/YY)
-              </label>
-              <input
-                type="text"
-                id="yr"
-                onChange={(e) => setYear(e.target.value.replace(/\D+/g, ""))}
-                value={year}
-                className={`text-input ${errors.year ? "invalid" : ""}`}
-                placeholder="YY"
-                maxLength={2}
-              />
-              <div className="input-error-container">{errors.year}</div>
-            </div>
-            <div className="card-form-input-container flex-2">
-              <label htmlFor="cvc" className="card-form-label">
-                CVC
-              </label>
-              <input
-                type="text"
-                id="cvc"
-                onChange={(e) =>
-                  setCvcNumber(e.target.value.replace(/\D+/g, ""))
-                }
-                value={cvcNumber}
-                className={`text-input ${errors.cvc ? "invalid" : ""}`}
-                placeholder="e.g. 123"
-                maxLength={3}
-              />
-              <div className="input-error-container">{errors.cvc}</div>
-            </div>
-          </div>
-          <button className="card-form-button">Confirm</button>
-        </form>
+            <button className="card-form-button">Confirm</button>
+          </form>
+        </div>
       ) : (
         <div id="completed-card">
           <img src={checkIcon} alt="Checkmark icon" id="completed-card-icon" />
