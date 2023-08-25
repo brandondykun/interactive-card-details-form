@@ -12,7 +12,8 @@
 #app-main {
   position: relative;
   width: 100vw;
-  min-height: 100vh;
+  min-height: 600px;
+  height: 100vh;
 }
 
 .background {
@@ -294,5 +295,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 2rem;
+  }
+
+  #card-form {
+    margin-top: 0;
   }
  }
